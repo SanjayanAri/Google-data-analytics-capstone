@@ -245,19 +245,14 @@ write_csv(duration_summary, "ride_duration_summary.csv")
 write_csv(frequency_summary, "ride_frequency_summary.csv")
 write_csv(hourly_summary, "hourly_usage_summary.csv")
 write_csv(seasonal_summary, "seasonal_usage_summary.csv")
-write_csv(conversion_funnel, "membership_conversion_funnel.csv")
 # Save detailed analysis results
 write_csv(all_trips_clean, "all_trips_cleaned.csv")
-write_csv(cost_analysis, "cost_analysis.csv")
-write_csv(frequent_casual, "frequent_casual_riders.csv")
-write_csv(cost_analysis, "membership_savings_opportunity.csv")
 write_csv(top_stations, "top_casual_stations.csv")
 
 # Save combined analysis results
 analysis_results <- list(
   ride_duration = duration_summary,
   ride_frequency = frequency_summary,
-  cost_analysis = cost_analysis,
   top_stations = top_stations
 )
 # Save as RDS for future use
@@ -276,7 +271,6 @@ cat("- Casual weekend ridership is ",
     round(max(filter(frequency_summary, member_casual == "casual")$ride_count) /
           min(filter(frequency_summary, member_casual == "casual")$ride_count)),
     " times higher than weekday ridership\n")
-cat("- ", nrow(cost_analysis), " casual riders would save money with membership\n")
 cat("- Top conversion opportunity: ",
     as.character(top_stations$start_station_name[1]),
     " station with ", top_stations$n[1], " casual rides\n")
