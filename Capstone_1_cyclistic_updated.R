@@ -93,7 +93,7 @@ cat("Member riders:", sum(all_trips_clean$member_casual == "member"), "\n")
 #================================
 # STEP 4: ANALYSIS & VISUALIZATION
 #================================
-# Business Question 1: How do annual members and casual riders use bikes differently? # nolint
+# Business Question : How do annual members and casual riders use bikes differently? 
 
 # Ride Duration Analysis
 duration_summary <- all_trips_clean %>%
@@ -176,49 +176,8 @@ ggplot(seasonal_summary, aes(month, ride_count, group = member_casual, color = m
   facet_wrap(~season, scales = "free_x", nrow = 1)
 ggsave("seasonal_usage_trends.png", width = 10, height = 6, dpi = 300)
 
-# Business Question 2: Why would casual riders buy annual memberships?
 
-# Frequent Casual Users Analysis
-frequent_casual <- all_trips_clean %>%
-  filter(member_casual == "casual") %>%
-  count(ride_id = as.character(ride_id), name = "ride_count") %>%
-  arrange(desc(ride_count)) %>%
-  filter(ride_count >= 8)  # Threshold for "frequent" usage (2+ rides/week)
-
-cat("\nConversion Opportunity:\n")
-cat("Frequent casual riders (8+ rides/quarter):", nrow(frequent_casual), "\n")
-cat("Potential revenue from conversion:", nrow(frequent_casual) * 200, "USD\n")
-
-# Cost Analysis: Casual pass vs Membership
-cost_analysis <- all_trips_clean %>%
-  filter(member_casual == "casual") %>%
-  mutate(ride_id = as.character(ride_id)) %>%
-  group_by(ride_id) %>%
-  summarise(total_rides = n(),
-            total_duration = sum(ride_length),
-            .groups = 'drop') %>%
-  mutate(
-    casual_cost = total_rides * 3.50,  # $3.50 per ride
-    membership_cost = 200,              # $200 annual membership
-    savings = casual_cost - membership_cost
-  ) %>% 
-  filter(savings > 0) %>%
-  arrange(desc(savings))
-
-# Visualization: Savings Potential
-ggplot(cost_analysis, aes(savings)) +
-  geom_histogram(fill = "#4E79A7", bins = 20) +
-  labs(title = "Potential Savings from Membership Conversion",
-       subtitle = "Distribution of savings for casual riders who would benefit from membership",
-       x = "Annual Savings (USD)", y = "Number of Riders") +
-  geom_vline(xintercept = mean(cost_analysis$savings), color = "#FF6F61", linetype = "dashed") +
-  annotate("text", x = mean(cost_analysis$savings) + 50, y = 100, 
-           label = paste("Average savings:", round(mean(cost_analysis$savings)), "USD"), 
-           color = "#FF6F61")
-ggsave("savings_potential.png", width = 10, height = 6, dpi = 300)
-
-
-# Business Question 3: How can digital media influence casual riders?
+# Business Question : How can digital media influence casual riders?
 
 # Top Stations Analysis
 top_stations <- all_trips_clean %>%
